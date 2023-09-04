@@ -2,7 +2,15 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const tokenGenerator = require('./utils/tokenGenerator');
-const { validateLogin } = require('./utils/validations');
+const { 
+  validateLogin,
+  validateToken,
+  validateName,
+  validateAge,
+  validateTalk,
+  validateWatchedAt,
+  validateRate,
+ } = require('./utils/validations');
 
 const app = express();
 app.use(express.json());
@@ -10,6 +18,7 @@ app.use(express.json());
 const HTTP_OK_STATUS = 200;
 const HTTP_NOT_FOUND_STATUS = 404;
 const HTTP_BAD_REQUEST_STATUS = 400;
+const HTTP_CREATED_STATUS = 201;
 const PORT = process.env.PORT || '3001';
 
 const TALKER_FILE = path.join(__dirname, 'talker.json');
@@ -19,10 +28,15 @@ app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
 
+const write = (talkers) => {
+  const filePath = path.join(__dirname, 'talker.json');
+  fs.writeFileSync(filePath, JSON.stringify(talkers), 'utf8');
+};
+
 // Req 1;
 
 app.get('/talker', (_request, response) => {
-  const talkersJson = fs.readFile(TALKER_FILE, 'utf8');
+  const talkersJson = fs.readFileSync(TALKER_FILE, 'utf8');
   const talkersData = JSON.parse(talkersJson);
   
   if (talkersData) {
@@ -36,7 +50,7 @@ app.get('/talker', (_request, response) => {
 
 app.get('/talker/:id', (req, res) => {
   const { id } = req.params;
-  const talkersJson = fs.readFile(TALKER_FILE, 'utf8');
+  const talkersJson = fs.readFileSync(TALKER_FILE, 'utf8');
   const talkersData = JSON.parse(talkersJson);
 
   const foundTalker = talkersData.find((talker) => talker.id === Number(id));
@@ -63,6 +77,25 @@ app.post('/login', (req, res) => {
   
 const token = tokenGenerator(16);
 return res.status(200).json({ token });
+});
+
+// Req 5;
+
+app.post('/talker',
+  validateToken,
+  validateName,
+  validateAge,
+  validateTalk,
+  validateWatchedAt,
+  validateRate,
+  (req, res) => {
+  const talkers = fs.read();
+  const id = talkers.length + 1;
+  const { name, age, talk } = req.body;
+  const newTalker = [...talkers, { id, name, age, talk }];
+  write(newTalker);
+
+  res.status(HTTP_CREATED_STATUS).json({ id, name, age, talk });
 });
 
 app.listen(PORT, () => {
