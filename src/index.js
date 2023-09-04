@@ -1,6 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const tokenGenerator = require('./utils/tokenGenerator');
 
 const app = express();
 app.use(express.json());
@@ -43,6 +44,18 @@ app.get('/talker/:id', (req, res) => {
   } else {
     res.status(HTTP_NOT_FOUND_STATUS).json({ message: 'Pessoa palestrante não encontrada' });
   }
+});
+
+// Req 3;
+
+app.post('/login', (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Email e senha são obrigatórios' });
+  }
+const token = tokenGenerator(16);
+return res.status(200).json({ token });
 });
 
 app.listen(PORT, () => {
