@@ -2,12 +2,14 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const tokenGenerator = require('./utils/tokenGenerator');
+const { validateLogin } = require('./utils/validations');
 
 const app = express();
 app.use(express.json());
 
 const HTTP_OK_STATUS = 200;
 const HTTP_NOT_FOUND_STATUS = 404;
+const HTTP_BAD_REQUEST_STATUS = 400;
 const PORT = process.env.PORT || '3001';
 
 const TALKER_FILE = path.join(__dirname, 'talker.json');
@@ -46,14 +48,19 @@ app.get('/talker/:id', (req, res) => {
   }
 });
 
-// Req 3;
+// Req 3, 4;
 
 app.post('/login', (req, res) => {
   const { email, password } = req.body;
 
-  if (!email || !password) {
-    return res.status(400).json({ error: 'Email e senha são obrigatórios' });
+  const validationErrors = validateLogin(email, password);
+
+  if (validationErrors && validationErrors.length > 0) {
+    const errorMessages = validationErrors.map((error) => error.message);
+    const msgError = errorMessages[0];
+    return res.status(HTTP_BAD_REQUEST_STATUS).json({ message: msgError });
   }
+  
 const token = tokenGenerator(16);
 return res.status(200).json({ token });
 });
