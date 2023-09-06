@@ -8,7 +8,7 @@ const {
   validateName,
   validateAge,
   validateTalk,
-  validateWatchedAt,
+  validateWatchAt,
   validateRate,
  } = require('./utils/validations');
 
@@ -27,6 +27,14 @@ const TALKER_FILE = path.join(__dirname, 'talker.json');
 app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
+
+const read = () => {
+  const filePath = path.join(__dirname, 'talker.json');
+  const file = fs.readFileSync(filePath, 'utf8');
+  const parsed = JSON.parse(file);
+
+  return parsed;
+};
 
 const write = (talkers) => {
   const filePath = path.join(__dirname, 'talker.json');
@@ -86,10 +94,11 @@ app.post('/talker',
   validateName,
   validateAge,
   validateTalk,
-  validateWatchedAt,
   validateRate,
-  (req, res) => {
-  const talkers = fs.read();
+  validateWatchAt,
+  async (req, res) => {
+    // console.log(req.body);
+  const talkers = await read();
   const id = talkers.length + 1;
   const { name, age, talk } = req.body;
   const newTalker = [...talkers, { id, name, age, talk }];
