@@ -41,6 +41,17 @@ const write = (talkers) => {
   fs.writeFileSync(filePath, JSON.stringify(talkers), 'utf8');
 };
 
+// Req 8;
+
+app.get('/talker/search',
+validateToken,
+(req, res) => {
+  const { q } = req.query;
+  const talkers = read();
+  const searchTalker = talkers.filter((talker) => talker.name.includes(q));
+  res.status(HTTP_OK_STATUS).json(searchTalker);
+});
+
 // Req 1;
 
 app.get('/talker', (_request, response) => {
@@ -131,17 +142,15 @@ app.put('/talker/:id',
 
 // Req 7;
 
-app.delete('/talker/:id', validateToken, (req, res) => {
+app.delete('/talker/:id', 
+validateToken,
+(req, res) => {
   const { id } = req.params;
   const talkers = read();
-  const deleteTalker = talkers.findIndex((talker) => talker.id === Number(id));
-  // if (deleteTalker === -1) {
-  //   res.status(HTTP_NOT_FOUND_STATUS).json({ message: 'Pessoa palestrante não encontrada' });
-  // } else {
+  const deleteTalker = talkers.findIndex((talker) => talker.id === Number(id)); 
     talkers.splice(deleteTalker, 1);
     write(talkers);
     res.status(204).send();
-  // }
 });
 
 app.listen(PORT, () => {
