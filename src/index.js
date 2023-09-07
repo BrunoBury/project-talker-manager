@@ -129,6 +129,21 @@ app.put('/talker/:id',
     }
   });
 
+// Req 7;
+
+app.delete('/talker/:id', validateToken, (req, res) => {
+  const { id } = req.params;
+  const talkers = read();
+  const deleteTalker = talkers.findIndex((talker) => talker.id === Number(id));
+  // if (deleteTalker === -1) {
+  //   res.status(HTTP_NOT_FOUND_STATUS).json({ message: 'Pessoa palestrante não encontrada' });
+  // } else {
+    talkers.splice(deleteTalker, 1);
+    write(talkers);
+    res.status(204).send();
+  // }
+});
+
 app.listen(PORT, () => {
   console.log('Online');
 });
