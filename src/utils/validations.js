@@ -102,14 +102,14 @@ function validateEmail(email) {
   const validateRate = (req, res, next) => {
     const { talk } = req.body;
     const { rate } = talk;
-    const validadeDec = !Number.isInteger(rate);
+    const validateDec = !Number.isInteger(rate);
     if (rate === undefined) {
       return res.status(400).json({
         message: 'O campo "rate" é obrigatório',
       });
     }
   
-    if (rate <= 0 || rate > 5 || validadeDec) {
+    if (rate <= 0 || rate > 5 || validateDec) {
       return res.status(400).json({
         message: 'O campo "rate" deve ser um número inteiro entre 1 e 5',
       });

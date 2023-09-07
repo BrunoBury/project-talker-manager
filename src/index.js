@@ -107,6 +107,28 @@ app.post('/talker',
   res.status(HTTP_CREATED_STATUS).json({ id, name, age, talk });
 });
 
+// Req 6;
+app.put('/talker/:id',
+  validateToken,
+  validateName,
+  validateAge,
+  validateTalk,
+  validateRate,
+  validateWatchAt,
+  (req, res) => {
+    const { id } = req.params;
+    const { name, age, talk } = req.body;
+    const talkers = read();
+    const editTalker = talkers.findIndex((talker) => talker.id === Number(id));
+    if (editTalker === -1) {
+      res.status(HTTP_NOT_FOUND_STATUS).json({ message: 'Pessoa palestrante não encontrada' });
+    } else {
+      talkers[editTalker] = { ...talkers[editTalker], name, age, talk };
+      write(talkers);
+      res.status(HTTP_OK_STATUS).json(talkers[editTalker]);
+    }
+  });
+
 app.listen(PORT, () => {
   console.log('Online');
 });
