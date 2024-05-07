@@ -1,10 +1,10 @@
-# :construction: README em construção ! :construction:
-<!-- Olá, Tryber!
-Esse é apenas um arquivo inicial para o README do seu projeto.
-É essencial que você preencha esse documento por conta própria, ok?
-Não deixe de usar nossas dicas de escrita de README de projetos, e deixe sua criatividade brilhar!
-:warning: IMPORTANTE: você precisa deixar nítido:
-- quais arquivos/pastas foram desenvolvidos por você; 
-- quais arquivos/pastas foram desenvolvidos por outra pessoa estudante;
-- quais arquivos/pastas foram desenvolvidos pela Trybe.
--->
+**Talk Manager**
+
+
+Este projeto foi criado para demonstrar habilidades na implementação de funções de middleware em um servidor Express.js, focando especialmente em:
+
+Validação de dados de entrada
+
+Manipulação de headers HTTP e autenticação via tokens
+
+Tratamento de datas e validação de requisitos específicos de dados
